@@ -3,10 +3,8 @@
 """Run tests against all the *.raw files."""
 import glob
 import os
-
 import pytest
 import yaml
-
 import lib
 from lib.parse import parse_output
 
