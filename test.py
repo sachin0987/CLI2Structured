@@ -29,27 +29,27 @@ for ip_route in json_list:
 print(test_list)
 
 # # Function to remove specified keys while keeping values intact
-# def remove_keys(json_obj, keys_to_remove):
-#     if isinstance(json_obj, dict):
-#         new_dict = {}
-#         for key, value in json_obj.items():
-#             if key in keys_to_remove:
-#                 continue
-#             if isinstance(value, dict):
-#                 new_dict[key] = remove_keys(value, keys_to_remove)
-#             else:
-#                 new_dict[key] = value
-#         return new_dict
-#     elif isinstance(json_obj, list):
-#         return [remove_keys(item, keys_to_remove) for item in json_obj]
-#     else:
-#         return json_obj
+def remove_keys(json_obj, keys_to_remove):
+    if isinstance(json_obj, dict):
+        new_dict = {}
+        for key, value in json_obj.items():
+            if key in keys_to_remove:
+                continue
+            if isinstance(value, dict):
+                new_dict[key] = remove_keys(value, keys_to_remove)
+            else:
+                new_dict[key] = value
+        return new_dict
+    elif isinstance(json_obj, list):
+        return [remove_keys(item, keys_to_remove) for item in json_obj]
+    else:
+        return json_obj
 
-# # Specify the keys to remove
-# keys_to_remove = ["TABLE_path", "ROW_path"]
+# Specify the keys to remove
+keys_to_remove = ["TABLE_path", "ROW_path"]
 
-# # Remove the specified keys while keeping values intact
-# cleaned_json = remove_keys(input_json, keys_to_remove)
+# Remove the specified keys while keeping values intact
+cleaned_json = remove_keys(input_json, keys_to_remove)
 
 # # Print the cleaned JSON
 # import json
