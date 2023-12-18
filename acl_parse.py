@@ -12,6 +12,11 @@ def parse_acl_config(acl_config, acl_names=None):
             aces = acl_match.group(2).strip().split("\n")
             acls[acl_name] = aces
 
+    if acl_names:
+        for name in acl_names:
+            if name not in acls:
+                acls[name] = []  # Return an empty list for ACLs not found
+
     return acls
 
 acl_config = """
@@ -30,6 +35,6 @@ ip access-list standard ACL_3
 """
 
 # Provide specific ACL names to parse or leave it as None to parse all ACLs
-acls_to_parse = ["ACL_1", "ACL_3"]
-acls = parse_acl_config(acl_config)
+acls_to_parse = ["ACL_1", "ACL_4"]  # ACL_4 doesn't exist in the configuration
+acls = parse_acl_config(acl_config, acls_to_parse)
 print(acls)
