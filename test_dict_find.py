@@ -76,5 +76,5 @@ result = find_key(data, key)
 if result is not None:
     print(f"The set for key '{key}' is: {result}")
 else:
-    print(f"Key '{key}' not found in the dictionary.")
+    print(f"Key '{key}' not found")
 
