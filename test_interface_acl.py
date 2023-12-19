@@ -7,6 +7,8 @@ def get_interface_acls(interface_config_output, interface_name, acl_names):
         acl_pattern = rf"interface {interface_}\s*([\s\S]*?)(?=^interface|\Z)"
         # Search for the ACL pattern in the interface configuration output
         match = re.search(acl_pattern, interface_config_output, re.MULTILINE)
+        acl_status = {}
+        other_acls = []
         if match:
             acl_config = match.group(1)
             all_acls = re.findall(r"ip access-group (\S+) (in|out)", acl_config)
@@ -14,17 +16,10 @@ def get_interface_acls(interface_config_output, interface_name, acl_names):
             acl_status = {acl_name: acl_name in configured_acls for acl_name in acl_names}
             other_acls = [acl for acl in configured_acls if acl not in acl_names]
             acl_status.update({"another_acl_cont": other_acls})
-            info.update({interface_:acl_status})
+        info.update({interface_:acl_status})
     return info
 # Example usage with provided interface config output
 interface_config_output = """
-interface GigabitEthernet1/1/1
- description Some description
- ip address 192.168.1.1 255.255.255.0
- ip access-group test_acl in
- ip access-group another_acl out
- ip access-group test in
-!
 interface GigabitEthernet1/1/2
  description Some description
  ip address 192.168.1.1 255.255.255.0
