@@ -9,25 +9,29 @@ def create_config(acl_dict):
     Returns:
         str: A string containing the configuration commands.
     """
-    config = ""
+    fixes = rollback = ""
     for acl_name in acl_dict.keys():
         # Add the ACL name to the configuration
-        config += f"ip access-list extended {acl_name}\n"
-        # Add the missing entries to the configuration
-        if "missing" in acl_dict[acl_name]:
-            for missing_conf in acl_dict[acl_name]["missing"]:
-                config += f"  {missing_conf}\n"
-
+        fixes += f"ip access-list extended {acl_name}\n"
+        rollback += f"ip access-list extended {acl_name}\n"
         # Remove the unwanted entries from the configuration
         if "unwanted" in acl_dict[acl_name]:
             for unwanted_conf in acl_dict[acl_name]["unwanted"]:
-                config += f"  no {unwanted_conf}\n"
-    return config
+                fixes += f"  no {unwanted_conf}\n"
+                rollback += f"  {unwanted_conf}\n"
+        # Add the missing entries to the configuration
+        if "missing" in acl_dict[acl_name]:
+            for missing_conf in acl_dict[acl_name]["missing"]:
+                fixes += f"  {missing_conf}\n"
+                rollback += f"  no {missing_conf}\n"
+
+    return fixes,rollback
 
 # Example usage
 acl_dict = {"ACL_1":{"missing":['permit tcp host 10.10.1.1','permit tcp host 10.10.1.2'],"unwanted":['permit tcp host 127.10.1.1','permit tcp host 123.10.1.3']},\
             "ACL_2":{"missing":['permit tcp host 10.10.1.1/24','permit tcp host 10.10.1.7'],"unwanted":[]}}
-config = create_config(acl_dict)
-print(config)
+fixes,rollback = create_config(acl_dict)
+print(fixes)
+print(rollback)
 
 
