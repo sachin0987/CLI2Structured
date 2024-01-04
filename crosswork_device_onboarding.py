@@ -6,18 +6,27 @@ crosswork_api = "https://your-crosswork-api-endpoint"
 username = "your_username"
 password = "your_password"
 
-# Function to authenticate and get the authentication token
-def get_auth_token():
+# Function to get the ticket
+def get_ticket():
+    ticket_url = f"{crosswork_api}/v1/tickets"
+    response = requests.post(ticket_url, auth=(username, password))
+    if response.status_code == 201:
+        return response.json().get('serviceTicket')
+    else:
+        print("Failed to get the ticket.")
+        return None
+
+# Function to get the authentication token
+def get_auth_token(ticket):
     auth_url = f"{crosswork_api}/v1/auth/token"
-    auth_data = {
-        "username": username,
-        "password": password
+    headers = {
+        "X-Auth-Token": ticket
     }
-    response = requests.post(auth_url, json=auth_data)
+    response = requests.post(auth_url, headers=headers)
     if response.status_code == 200:
         return response.json().get('token')
     else:
-        print("Authentication failed.")
+        print("Failed to get the authentication token.")
         return None
 
 # Function to register a device
@@ -43,6 +52,8 @@ device_info = {
 
 # Main execution
 if __name__ == "__main__":
-    token = get_auth_token()
-    if token:
-        register_device(device_info, token)
+    ticket = get_ticket()
+    if ticket:
+        token = get_auth_token(ticket)
+        if token:
+            register_device(device_info, token)
