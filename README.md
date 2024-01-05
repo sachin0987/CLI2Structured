@@ -13,3 +13,5 @@ graph TD;
     Add_to_Crosswork --> End[End];
     Check_Crosswork --> End;
 :::
+
+find /path/to/your/directory -type f -name 'pattern*' -exec ls -t {} + | tail -n +2 | xargs rm --
